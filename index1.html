@@ -162,14 +162,12 @@
                             <label for="emailUpdates">I want to receive career guidance and updates via email</label>
                         </div>
                     </div>
-
                     <div class="nav-buttons">
                         <button type="button" class="nav-btn" disabled>Previous</button>
                         <button type="button" class="nav-btn" onclick="registerUser()">Create Account & Continue</button>
                     </div>
                 </form>
             </div>
-
             <div id="loginForm" style="display: none;">
                 <form id="loginFormElement">
                     <div class="form-grid">
@@ -182,14 +180,12 @@
                             <input type="password" id="loginPassword" name="loginPassword" required>
                         </div>
                     </div>
-                    
                     <div class="form-group">
                         <div class="checkbox-item">
                             <input type="checkbox" id="rememberMe" name="rememberMe">
                             <label for="rememberMe">Remember me</label>
                         </div>
                     </div>
-
                     <div class="nav-buttons">
                         <button type="button" class="nav-btn" disabled>Previous</button>
                         <button type="button" class="nav-btn" onclick="loginUser()">Login & Continue</button>
@@ -197,11 +193,9 @@
                 </form>
             </div>
         </section>
-
         <section class="form-section" id="step2">
             <h2>Career Assessment</h2>
             <p>Answer these questions to help us understand your interests and preferences.</p>
-            
             <div class="question">
                 <h3>1. Which type of work environment do you prefer?</h3>
                 <div class="options">
@@ -223,7 +217,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="question">
                 <h3>2. What type of problems do you enjoy solving?</h3>
                 <div class="options">
@@ -245,7 +238,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="question">
                 <h3>3. Which skills do you currently possess? (Select all that apply)</h3>
                 <div class="checkbox-group">
@@ -283,7 +275,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="question">
                 <h3>4. What are your career priorities?</h3>
                 <div class="options">
@@ -305,23 +296,19 @@
                     </div>
                 </div>
             </div>
-
             <div class="nav-buttons">
                 <button type="button" class="nav-btn" onclick="previousStep(2)">Previous</button>
                 <button type="button" class="nav-btn" onclick="nextStep(2)">Next</button>
             </div>
         </section>
-
         <section class="form-section" id="step3">
             <div class="results">
                 <h2>Your Career Recommendations</h2>
                 <div id="careerRecommendations"></div>
             </div>
-            
             <div class="learning-path">
                 <h2>Your Personalized Learning Path</h2>
                 <div id="skillGaps"></div>
-                
                 <div class="platform-links">
                     <div class="platform-card">
                         <h3>Coursera</h3>
@@ -340,20 +327,18 @@
                     </div>
                 </div>
             </div>
-
             <div class="mentorship-section">
                 <h2>Recommended Mentors for You</h2>
                 <p>Based on your assessment results, here are mentors who can help guide your career:</p>
                 <div class="mentor-grid" id="recommendedMentors"></div>
             </div>
-
             <div class="nav-buttons">
                 <button type="button" class="nav-btn" onclick="previousStep(3)">Previous</button>
                 <button type="button" class="nav-btn" onclick="startOver()">Start Over</button>
             </div>
         </section>
     </main>
-
     <script src="script.js"></script>
 </body>
 </html>
+
