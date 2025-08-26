@@ -306,7 +306,6 @@ body {
     width: auto;
 }
 
-/* Results Section Styles */
 .results {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -341,7 +340,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Learning Path Styles */
 .learning-path {
     background: white;
     border-radius: 15px;
