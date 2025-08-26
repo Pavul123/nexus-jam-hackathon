@@ -1,39 +1,359 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf_8">
-        <meta name="viewport" content="width= device_width, initial_scale=1.0">
-        <title>Career Compass_your path to success</title>
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header class ="header">
-            <nav class="nav container">
-                <a href="#" class="logo">Career Compass</a>
-                <ul class ="nav_links'>
-                    <li> <a href="#home">home</a></li>
-                    <li><a herf="#Mentor">Mentor</a></li>
-                    <li><a href="#Assessment">Assessment</a></li>
-                    <li><a href="#Contact">Contact</a></li>
-                    </ul>
-                    <div class="user_info" id="user_info"></div>
-                </nav>
-        </header>
-        <main class="main container">
-            <section class="Welcome_section" id="Welcome">
-                <h1>Find your perfect career path</h1>
-                <p>Get personalised career guidance,Skill assessment and connect with expect mentor to archieve your professional goal.</p>
-                <button class="cta_button" onclick="Startjourney()">start Assessment</button>
-                <button class="cta_button secondary" onclick="showmentor()">find mentors</button>
-            </section>
-            <div class="progress_bar" id="progress bar" style="display:none;">
-                <div class="progress_fill" id="progressfill" style="width:0%;"></div>
-            </div>"
-            <section class="mentorship_section" id="mentorship section" style="display:none;">
-                <h2>Connect with expect mentor</h2>
-                <p>Get personalised guidance from industrial professional who can help you navigate your career path.</p>
-                <div class=",mentor_grid" id="mentorgrid"></div>
-            </section>
-        </main>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Compass - Your Path to Success</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="#" class="logo">Career Compass</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#mentors">Mentors</a></li>
+                <li><a href="#assessment">Assessment</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="user-info" id="userInfo"></div>
+        </nav>
+    </header>
 
+    <main class="main container">
+        <section class="welcome-section" id="welcome">
+            <h1>Find Your Perfect Career Path</h1>
+            <p>Get personalized career guidance, skill assessments, and connect with expert mentors to achieve your professional goals.</p>
+            <button class="cta-button" onclick="startJourney()">Start Assessment</button>
+            <button class="cta-button secondary" onclick="showMentors()">Find Mentors</button>
+        </section>
+
+        <div class="progress-bar" id="progressBar" style="display: none;">
+            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+        </div>
+
+        <section class="mentorship-section" id="mentorshipSection" style="display: none;">
+            <h2>Connect with Expert Mentors</h2>
+            <p>Get personalized guidance from industry professionals who can help you navigate your career path.</p>
+            <div class="mentor-grid" id="mentorGrid"></div>
+        </section>
+
+        <section class="form-section" id="schedulerModal">
+            <h2>Schedule a Meeting</h2>
+            <div id="schedulerContent"></div>
+        </section>
+
+        <section class="meeting-interface" id="meetingInterface">
+            <div class="meeting-header">
+                <div class="meeting-info">
+                    <h3 id="meetingTitle">Meeting with Mentor</h3>
+                    <p id="meetingDetails">Loading meeting details...</p>
+                </div>
+                <div class="meeting-status status-scheduled" id="meetingStatus">Scheduled</div>
+            </div>
+
+            <div class="video-section">
+                <div class="video-area">
+                    <div class="video-placeholder">
+                        <p>Video call will appear here</p>
+                        <small>Click "Start Meeting" to begin</small>
+                    </div>
+                    <div class="video-controls">
+                        <button class="control-btn" onclick="toggleMute()" title="Toggle Microphone">🎤</button>
+                        <button class="control-btn" onclick="toggleVideo()" title="Toggle Video">📹</button>
+                        <button class="control-btn" onclick="endMeeting()" title="End Meeting">📞</button>
+                    </div>
+                </div>
+
+                <div class="chat-area">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message message-received">
+                            <strong>Mentor:</strong> Hello! Ready to discuss your career goals?
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="handleChatKeyPress(event)">
+                        <button onclick="sendMessage()">📩</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="meeting-notes">
+                <h4>Meeting Notes</h4>
+                <textarea id="meetingNotes" placeholder="Take notes during your meeting..."></textarea>
+            </div>
+
+            <div class="nav-buttons">
+                <button type="button" class="nav-btn" onclick="leaveMeeting()">Leave Meeting</button>
+                <button type="button" class="nav-btn" onclick="saveNotes()">Save Notes</button>
+            </div>
+        </section>
+
+        <section class="form-section" id="step1">
+            <h2>Create Your Account & Profile</h2>
+            
+            <div class="registration-tabs">
+                <button type="button" class="tab-button active" onclick="switchTab('register')">Create Account</button>
+                <button type="button" class="tab-button" onclick="switchTab('login')">Login</button>
+            </div>
+
+            <div id="messageContainer" class="message"></div>
+            
+            <div id="registerForm">
+                <form id="registrationForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="regFullName">Full Name *</label>
+                            <input type="text" id="regFullName" name="regFullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regEmail">Email Address *</label>
+                            <input type="email" id="regEmail" name="regEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regPassword">Password *</label>
+                            <input type="password" id="regPassword" name="regPassword" required minlength="8">
+                            <div id="passwordStrength" class="password-strength"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password *</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regAge">Age</label>
+                            <input type="number" id="regAge" name="regAge" min="16" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="regPhone">Phone Number</label>
+                            <input type="tel" id="regPhone" name="regPhone">
+                        </div>
+                        <div class="form-group">
+                            <label for="regCurrentStudy">Current Study Level *</label>
+                            <select id="regCurrentStudy" name="regCurrentStudy" required>
+                                <option value="">Select your level</option>
+                                <option value="high-school">High School</option>
+                                <option value="undergraduate">Undergraduate</option>
+                                <option value="graduate">Graduate</option>
+                                <option value="postgraduate">Postgraduate</option>
+                                <option value="professional">Working Professional</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="regFieldOfStudy">Field of Study</label>
+                            <input type="text" id="regFieldOfStudy" name="regFieldOfStudy" placeholder="e.g., Computer Science, Business Administration">
+                        </div>
+                        <div class="form-group">
+                            <label for="regGraduationYear">Expected/Actual Graduation Year *</label>
+                            <input type="number" id="regGraduationYear" name="regGraduationYear" min="2020" max="2030" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regLocation">Location</label>
+                            <input type="text" id="regLocation" name="regLocation" placeholder="City, Country">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="termsAccept" name="termsAccept" required>
+                            <label for="termsAccept">I accept the <a href="#" style="color: #667eea;">Terms of Service</a> and <a href="#" style="color: #667eea;">Privacy Policy</a> *</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="emailUpdates" name="emailUpdates">
+                            <label for="emailUpdates">I want to receive career guidance and updates via email</label>
+                        </div>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button type="button" class="nav-btn" disabled>Previous</button>
+                        <button type="button" class="nav-btn" onclick="registerUser()">Create Account & Continue</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="loginForm" style="display: none;">
+                <form id="loginFormElement">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="loginEmail">Email Address *</label>
+                            <input type="email" id="loginEmail" name="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password *</label>
+                            <input type="password" id="loginPassword" name="loginPassword" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rememberMe" name="rememberMe">
+                            <label for="rememberMe">Remember me</label>
+                        </div>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button type="button" class="nav-btn" disabled>Previous</button>
+                        <button type="button" class="nav-btn" onclick="loginUser()">Login & Continue</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="form-section" id="step2">
+            <h2>Career Assessment</h2>
+            <p>Answer these questions to help us understand your interests and preferences.</p>
+            
+            <div class="question">
+                <h3>1. Which type of work environment do you prefer?</h3>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="env1" name="workEnvironment" value="collaborative">
+                        <label for="env1">Collaborative team environment</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="env2" name="workEnvironment" value="independent">
+                        <label for="env2">Independent work with minimal supervision</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="env3" name="workEnvironment" value="mixed">
+                        <label for="env3">Mix of both team and individual work</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="env4" name="workEnvironment" value="leadership">
+                        <label for="env4">Leadership and management roles</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>2. What type of problems do you enjoy solving?</h3>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="problem1" name="problemType" value="technical">
+                        <label for="problem1">Technical and analytical problems</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="problem2" name="problemType" value="creative">
+                        <label for="problem2">Creative and design challenges</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="problem3" name="problemType" value="people">
+                        <label for="problem3">People and relationship issues</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="problem4" name="problemType" value="business">
+                        <label for="problem4">Business and strategic problems</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>3. Which skills do you currently possess? (Select all that apply)</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill1" name="currentSkills" value="programming">
+                        <label for="skill1">Programming</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill2" name="currentSkills" value="design">
+                        <label for="skill2">Design</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill3" name="currentSkills" value="communication">
+                        <label for="skill3">Communication</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill4" name="currentSkills" value="analytics">
+                        <label for="skill4">Data Analytics</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill5" name="currentSkills" value="marketing">
+                        <label for="skill5">Marketing</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill6" name="currentSkills" value="finance">
+                        <label for="skill6">Finance</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill7" name="currentSkills" value="leadership">
+                        <label for="skill7">Leadership</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill8" name="currentSkills" value="writing">
+                        <label for="skill8">Writing</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>4. What are your career priorities?</h3>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="priority1" name="careerPriority" value="growth">
+                        <label for="priority1">Rapid career growth and advancement</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="priority2" name="careerPriority" value="balance">
+                        <label for="priority2">Work-life balance and stability</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="priority3" name="careerPriority" value="impact">
+                        <label for="priority3">Making a positive impact on society</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="priority4" name="careerPriority" value="financial">
+                        <label for="priority4">Financial security and high salary</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button type="button" class="nav-btn" onclick="previousStep(2)">Previous</button>
+                <button type="button" class="nav-btn" onclick="nextStep(2)">Next</button>
+            </div>
+        </section>
+
+        <section class="form-section" id="step3">
+            <div class="results">
+                <h2>Your Career Recommendations</h2>
+                <div id="careerRecommendations"></div>
+            </div>
+            
+            <div class="learning-path">
+                <h2>Your Personalized Learning Path</h2>
+                <div id="skillGaps"></div>
+                
+                <div class="platform-links">
+                    <div class="platform-card">
+                        <h3>Coursera</h3>
+                        <p>Access university-level courses and professional certificates</p>
+                        <div id="courseraLinks"></div>
+                    </div>
+                    <div class="platform-card">
+                        <h3>Udemy</h3>
+                        <p>Practical skills and hands-on projects</p>
+                        <div id="udemyLinks"></div>
+                    </div>
+                    <div class="platform-card">
+                        <h3>LinkedIn Learning</h3>
+                        <p>Professional development and industry insights</p>
+                        <div id="linkedinLinks"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mentorship-section">
+                <h2>Recommended Mentors for You</h2>
+                <p>Based on your assessment results, here are mentors who can help guide your career:</p>
+                <div class="mentor-grid" id="recommendedMentors"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button type="button" class="nav-btn" onclick="previousStep(3)">Previous</button>
+                <button type="button" class="nav-btn" onclick="startOver()">Start Over</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
 </html>
