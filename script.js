@@ -245,7 +245,6 @@ function viewProfile(mentorId) {
     alert(`Profile: ${mentor.name}\n\n${mentor.bio}\n\nSpecialties: ${mentor.specialties.join(', ')}\nRating: ${mentor.rating}/5.0\nSessions: ${mentor.sessions}\nRate: ${mentor.price}`);
 }
 
-// Meeting Functions are here
 function joinMeeting(meetingId) {
     const meeting = meetings[meetingId];
     if (!meeting) return;
@@ -359,7 +358,6 @@ function saveNotes() {
     }
 }
 
-// Authentication Functions here we set
 function switchTab(tab) {
     const registerForm = document.getElementById('registerForm');
     const loginForm = document.getElementById('loginForm');
@@ -487,3 +485,331 @@ function registerUser() {
         registrationDate: new Date().toISOString(),
         lastLogin: new Date().toISOString()
     };
+function updateUserInfo() {
+    const userInfo = document.getElementById('userInfo');
+    if (currentUser) {
+        userInfo.textContent = `Welcome, ${currentUser.fullName}`;
+        userInfo.style.display = 'block';
+    } else {
+        userInfo.style.display = 'none';
+    }
+}
+
+function startJourney() {
+    document.getElementById('welcome').style.display = 'none';
+    document.getElementById('mentorshipSection').style.display = 'none';
+    document.getElementById('progressBar').style.display = 'block';
+    currentStep = 1;
+    showStep(1);
+    updateProgress();
+}
+
+function showStep(step) {
+    document.querySelectorAll('.form-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    document.getElementById('mentorshipSection').style.display = 'none';
+    document.getElementById('meetingInterface').classList.remove('active');
+    document.getElementById(`step${step}`).classList.add('active');
+}
+
+function updateProgress() {
+    const progress = (currentStep / 3) * 100;
+    document.getElementById('progressFill').style.width = `${progress}%`;
+}
+
+function nextStep(step) {
+    if (step === 1) {
+        if (!currentUser) {
+            showMessage('Please create an account or login to continue.', 'error');
+            return;
+        }
+        currentStep = 2;
+        showStep(2);
+        updateProgress();
+    } else if (step === 2) {
+        if (validateAssessment()) {
+            collectAssessmentData();
+            generateRecommendations();
+            currentStep = 3;
+            showStep(3);
+            updateProgress();
+        }
+    }
+}
+
+function previousStep(step) {
+    currentStep = step - 1;
+    showStep(currentStep);
+    updateProgress();
+}
+
+function validateAssessment() {
+    const requiredQuestions = ['workEnvironment', 'problemType', 'careerPriority'];
+    let isValid = true;
+    
+    requiredQuestions.forEach(question => {
+        const answer = document.querySelector(`input[name="${question}"]:checked`);
+        if (!answer) {
+            isValid = false;
+        }
+    });
+    
+    if (!isValid) {
+        showMessage('Please answer all assessment questions.', 'error');
+    }
+    
+    return isValid;
+}
+
+function collectAssessmentData() {
+    userData.workEnvironment = document.querySelector('input[name="workEnvironment"]:checked')?.value;
+    userData.problemType = document.querySelector('input[name="problemType"]:checked')?.value;
+    userData.careerPriority = document.querySelector('input[name="careerPriority"]:checked')?.value;
+    userData.currentSkills = [];
+    
+    document.querySelectorAll('input[name="currentSkills"]:checked').forEach(skill => {
+        userData.currentSkills.push(skill.value);
+    });
+    
+    if (currentUser) {
+        currentUser.assessmentData = {
+            workEnvironment: userData.workEnvironment,
+            problemType: userData.problemType,
+            careerPriority: userData.careerPriority,
+            currentSkills: userData.currentSkills,
+            completedDate: new Date().toISOString()
+        };
+    }
+}
+
+// Recommendations Functions
+function generateRecommendations() {
+    const recommendations = getCareerRecommendations(userData);
+    displayRecommendations(recommendations);
+    generateLearningPath(recommendations);
+    showRecommendedMentors(recommendations);
+}
+
+function getCareerRecommendations(userData) {
+    const { workEnvironment, problemType, careerPriority, currentSkills, fieldOfStudy } = userData;
+    let recommendations = [];
+    
+    if (problemType === 'technical' || currentSkills.includes('programming') || fieldOfStudy?.toLowerCase().includes('computer')) {
+        recommendations.push({
+            title: 'Software Developer',
+            description: 'Build applications and systems using various programming languages',
+            matchScore: 95,
+            requiredSkills: ['Programming', 'Problem Solving', 'Software Design', 'Testing'],
+            growthPotential: 'High',
+            avgSalary: '$75,000 - $150,000'
+        });
+    }
+    
+    if (problemType === 'creative' || currentSkills.includes('design')) {
+        recommendations.push({
+            title: 'UX/UI Designer',
+            description: 'Design user-friendly interfaces and experiences for digital products',
+            matchScore: 90,
+            requiredSkills: ['Design Thinking', 'Prototyping', 'User Research', 'Visual Design'],
+            growthPotential: 'High',
+            avgSalary: '$65,000 - $120,000'
+        });
+    }
+    
+    if (recommendations.length === 0) {
+        recommendations.push({
+            title: 'Project Coordinator',
+            description: 'Coordinate projects and ensure timely completion of deliverables',
+            matchScore: 70,
+            requiredSkills: ['Organization', 'Communication', 'Time Management', 'Coordination'],
+            growthPotential: 'Medium',
+            avgSalary: '$45,000 - $75,000'
+        });
+    }
+    
+    return recommendations.slice(0, 3);
+}
+
+function displayRecommendations(recommendations) {
+    const container = document.getElementById('careerRecommendations');
+    container.innerHTML = '';
+    
+    recommendations.forEach(career => {
+        const careerCard = document.createElement('div');
+        careerCard.className = 'career-card';
+        careerCard.innerHTML = `
+            <h3>${career.title} (${career.matchScore}% match)</h3>
+            <p>${career.description}</p>
+            <p><strong>Average Salary:</strong> ${career.avgSalary}</p>
+            <p><strong>Growth Potential:</strong> ${career.growthPotential}</p>
+            <div class="skill-tags">
+                ${career.requiredSkills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+            </div>
+        `;
+        container.appendChild(careerCard);
+    });
+}
+
+function generateLearningPath(recommendations) {
+    const skillGapsContainer = document.getElementById('skillGaps');
+    const allRequiredSkills = [...new Set(recommendations.flatMap(career => career.requiredSkills))];
+    const currentSkills = userData.currentSkills || [];
+    
+    const skillGaps = allRequiredSkills.filter(skill => 
+        !currentSkills.some(currentSkill => 
+            skill.toLowerCase().includes(currentSkill.toLowerCase()) || 
+            currentSkill.toLowerCase().includes(skill.toLowerCase())
+        )
+    );
+    
+    skillGapsContainer.innerHTML = `
+        <h3>Skills to Develop:</h3>
+        <div class="skill-tags">
+            ${skillGaps.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+        </div>
+    `;
+    
+    generatePlatformLinks(skillGaps);
+}
+
+function showRecommendedMentors(recommendations) {
+    const recommendedMentorsContainer = document.getElementById('recommendedMentors');
+    const allRequiredSkills = [...new Set(recommendations.flatMap(career => career.requiredSkills))];
+    
+    const recommendedMentors = Object.values(mentors).filter(mentor => 
+        mentor.specialties.some(specialty => 
+            allRequiredSkills.some(skill => 
+                specialty.toLowerCase().includes(skill.toLowerCase()) ||
+                skill.toLowerCase().includes(specialty.toLowerCase())
+            )
+        )
+    ).slice(0, 3);
+    
+    recommendedMentorsContainer.innerHTML = '';
+    
+    if (recommendedMentors.length > 0) {
+        recommendedMentors.forEach(mentor => {
+            const mentorCard = createMentorCard(mentor);
+            recommendedMentorsContainer.appendChild(mentorCard);
+        });
+    } else {
+        recommendedMentorsContainer.innerHTML = '<p>No specific mentors found for your career path. <button class="mentor-btn primary" onclick="showMentors()">Browse All Mentors</button></p>';
+    }
+}
+
+function generatePlatformLinks(skillGaps) {
+    const courseraContainer = document.getElementById('courseraLinks');
+    const udemyContainer = document.getElementById('udemyLinks');
+    const linkedinContainer = document.getElementById('linkedinLinks');
+    
+    const skillMap = {
+        'Programming': { title: 'Programming for Everybody (Python)', url: 'https://www.coursera.org/learn/python' },
+        'Design Thinking': { title: 'Design Thinking for Innovation', url: 'https://www.coursera.org/learn/uva-darden-design-thinking-innovation' },
+        'Communication': { title: 'Effective Communication', url: 'https://www.coursera.org/learn/effective-business-communication' }
+    };
+    
+    const courseraLinks = skillGaps.map(skill => 
+        skillMap[skill] || { title: `${skill} Fundamentals`, url: `https://www.coursera.org/search?query=${encodeURIComponent(skill)}` }
+    ).slice(0, 3);
+    
+    const udemyLinks = skillGaps.map(skill => 
+        ({ title: `${skill} Complete Course`, url: `https://www.udemy.com/courses/search/?q=${encodeURIComponent(skill)}` })
+    ).slice(0, 3);
+    
+    const linkedinLinks = skillGaps.map(skill => 
+        ({ title: `${skill} Professional Development`, url: `https://www.linkedin.com/learning/search?keywords=${encodeURIComponent(skill)}` })
+    ).slice(0, 3);
+    
+    courseraContainer.innerHTML = courseraLinks.map(link => `<a href="${link.url}" target="_blank">${link.title}</a>`).join('');
+    udemyContainer.innerHTML = udemyLinks.map(link => `<a href="${link.url}" target="_blank">${link.title}</a>`).join('');
+    linkedinContainer.innerHTML = linkedinLinks.map(link => `<a href="${link.url}" target="_blank">${link.title}</a>`).join('');
+}
+
+function startOver() {
+    currentStep = 0;
+    document.getElementById('progressBar').style.display = 'none';
+    document.getElementById('welcome').style.display = 'block';
+    document.getElementById('mentorshipSection').style.display = 'none';
+    document.getElementById('meetingInterface').classList.remove('active');
+    
+    document.querySelectorAll('.form-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    document.querySelectorAll('input[type="radio"], input[name="currentSkills"]').forEach(input => {
+        input.checked = false;
+    });
+    
+    clearMessage();
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Password strength checker
+    document.getElementById('regPassword').addEventListener('input', function() {
+        checkPasswordStrength(this.value);
+    });
+    
+    
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+    
+    // Form validation on blur
+    document.querySelectorAll('input, select, textarea').forEach(field => {
+        field.addEventListener('blur', function() {
+            if (this.hasAttribute('required') && !this.value.trim()) {
+                this.style.borderColor = '#ff6b6b';
+            } else {
+                this.style.borderColor = '#e1e5e9';
+            }
+        });
+        
+        field.addEventListener('input', function() {
+            if (this.style.borderColor === 'rgb(255, 107, 107)' && this.value.trim()) {
+                this.style.borderColor = '#e1e5e9';
+            }
+        });
+    });
+    
+    
+    registeredUsers['demo@example.com'] = {
+        id: 'user_demo',
+        fullName: 'Demo User',
+        email: 'demo@example.com',
+        password: 'demo123',
+        age: '25',
+        phone: '+1234567890',
+        currentStudy: 'undergraduate',
+        fieldOfStudy: 'Computer Science',
+        graduationYear: '2025',
+        location: 'New York, USA',
+        emailUpdates: true,
+        registrationDate: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+    };
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        if (document.getElementById('schedulerModal').classList.contains('active')) {
+            closeScheduler();
+        }
+        if (document.getElementById('meetingInterface').classList.contains('active')) {
+            if (confirm('Are you sure you want to leave the meeting?')) {
+                leaveMeeting();
+            }
+        }
+    }
+    
+    if (e.key === 'Enter' && e.target.id === 'chatInput') {
+        sendMessage();
+    }
+});
