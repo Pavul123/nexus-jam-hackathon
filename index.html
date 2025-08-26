@@ -1,1 +1,100 @@
-this is html file
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Compass - Your Path to Success</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="#" class="logo">Career Compass</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#mentors">Mentors</a></li>
+                <li><a href="#assessment">Assessment</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="user-info" id="userInfo"></div>
+        </nav>
+    </header>
+
+    <main class="main container">
+        <section class="welcome-section" id="welcome">
+            <h1>Find Your Perfect Career Path</h1>
+            <p>Get personalized career guidance, skill assessments, and connect with expert mentors to achieve your professional goals.</p>
+            <button class="cta-button" onclick="startJourney()">Start Assessment</button>
+            <button class="cta-button secondary" onclick="showMentors()">Find Mentors</button>
+        </section>
+
+        <div class="progress-bar" id="progressBar" style="display: none;">
+            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+        </div>
+
+        <section class="mentorship-section" id="mentorshipSection" style="display: none;">
+            <h2>Connect with Expert Mentors</h2>
+            <p>Get personalized guidance from industry professionals who can help you navigate your career path.</p>
+            <div class="mentor-grid" id="mentorGrid"></div>
+        </section>
+
+        <section class="form-section" id="schedulerModal">
+            <h2>Schedule a Meeting</h2>
+            <div id="schedulerContent"></div>
+        </section>
+
+        <section class="meeting-interface" id="meetingInterface">
+            <div class="meeting-header">
+                <div class="meeting-info">
+                    <h3 id="meetingTitle">Meeting with Mentor</h3>
+                    <p id="meetingDetails">Loading meeting details...</p>
+                </div>
+                <div class="meeting-status status-scheduled" id="meetingStatus">Scheduled</div>
+            </div>
+
+            <div class="video-section">
+                <div class="video-area">
+                    <div class="video-placeholder">
+                        <p>Video call will appear here</p>
+                        <small>Click "Start Meeting" to begin</small>
+                    </div>
+                    <div class="video-controls">
+                        <button class="control-btn" onclick="toggleMute()" title="Toggle Microphone">🎤</button>
+                        <button class="control-btn" onclick="toggleVideo()" title="Toggle Video">📹</button>
+                        <button class="control-btn" onclick="endMeeting()" title="End Meeting">📞</button>
+                    </div>
+                </div>
+
+                <div class="chat-area">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message message-received">
+                            <strong>Mentor:</strong> Hello! Ready to discuss your career goals?
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="handleChatKeyPress(event)">
+                        <button onclick="sendMessage()">📩</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="meeting-notes">
+                <h4>Meeting Notes</h4>
+                <textarea id="meetingNotes" placeholder="Take notes during your meeting..."></textarea>
+            </div>
+
+            <div class="nav-buttons">
+                <button type="button" class="nav-btn" onclick="leaveMeeting()">Leave Meeting</button>
+                <button type="button" class="nav-btn" onclick="saveNotes()">Save Notes</button>
+            </div>
+        </section>
+
+        <section class="form-section" id="step1">
+            <h2>Create Your Account & Profile</h2>
+            
+            <div class="registration-tabs">
+                <button type="button" class="tab-button active" onclick="switchTab('register')">Create Account</button>
+                <button type="button" class="tab-button" onclick="switchTab('login')">Login</button>
+            </div>
+        </body>
+        </html>
